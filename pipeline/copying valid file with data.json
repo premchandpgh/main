@@ -200,6 +200,9 @@
 		"variables": {
 			"file_name": {
 				"type": "String"
+			},
+			"a": {
+				"type": "String"
 			}
 		},
 		"annotations": [],
