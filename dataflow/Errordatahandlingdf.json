@@ -1,0 +1,36 @@
+{
+	"name": "Errordatahandlingdf",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "errordatads",
+						"type": "DatasetReference"
+					},
+					"name": "errorhandlingsource"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          saledate as string,",
+				"          salesitem as string,",
+				"          country as string,",
+				"          quantity as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> errorhandlingsource",
+				"errorhandlingsource split(isNull(toDate(saledate,'dd--yyyy')),",
+				"     disjoint: false) ~> split1@(ValidData, InvalidData)"
+			]
+		}
+	}
+}
