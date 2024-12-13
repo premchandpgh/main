@@ -12,7 +12,30 @@
 					"name": "errorhandlingsource"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "errorhandlinddatals",
+						"type": "LinkedServiceReference"
+					}
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink2",
+					"rejectedDataLinkedService": {
+						"referenceName": "errorhandlinddatals",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
 			"transformations": [
 				{
 					"name": "split1"
@@ -29,7 +52,39 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> errorhandlingsource",
 				"errorhandlingsource split(isNull(toDate(saledate,'dd--yyyy')),",
-				"     disjoint: false) ~> split1@(ValidData, InvalidData)"
+				"     disjoint: false) ~> split1@(ValidData, InvalidData)",
+				"split1@ValidData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          saledate,",
+				"          salesitem,",
+				"          country,",
+				"          quantity",
+				"     )) ~> sink1",
+				"split1@InvalidData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          saledate,",
+				"          salesitem,",
+				"          country,",
+				"          quantity",
+				"     )) ~> sink2"
 			]
 		}
 	}
